@@ -1,4 +1,5 @@
 const STORAGE_KEY = "forever-stopwatch-started-at";
+const GLOBAL_START_URL = "start.json?v=1";
 
 const els = {
   startButton: document.querySelector("#startButton"),
@@ -16,11 +17,16 @@ const els = {
 
 let startedAt = readStartTime();
 
-function readStartTime() {
+function readStartTime(globalStart) {
   const url = new URL(window.location.href);
   const fromUrl = Number(url.searchParams.get("start"));
   const fromStorage = Number(localStorage.getItem(STORAGE_KEY));
-  const candidate = Number.isFinite(fromUrl) && fromUrl > 0 ? fromUrl : fromStorage;
+  const candidate =
+    Number.isFinite(fromUrl) && fromUrl > 0
+      ? fromUrl
+      : Number.isFinite(globalStart) && globalStart > 0
+        ? globalStart
+        : fromStorage;
 
   if (Number.isFinite(candidate) && candidate > 0) {
     localStorage.setItem(STORAGE_KEY, String(candidate));
@@ -28,6 +34,22 @@ function readStartTime() {
   }
 
   return null;
+}
+
+async function readGlobalStartTime() {
+  try {
+    const response = await fetch(GLOBAL_START_URL, { cache: "no-store" });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const config = await response.json();
+    const timestamp = Number(config.startedAt);
+    return Number.isFinite(timestamp) && timestamp > 0 ? timestamp : null;
+  } catch {
+    return null;
+  }
 }
 
 function startForever() {
@@ -116,10 +138,13 @@ function formatNumber(value) {
   return new Intl.NumberFormat("ru-RU").format(value);
 }
 
-if (startedAt) {
-  persistStartInUrl(startedAt);
-}
-
 els.startButton.addEventListener("click", startForever);
 render();
 setInterval(render, 1000);
+
+readGlobalStartTime().then((globalStart) => {
+  if (!startedAt && globalStart) {
+    startedAt = readStartTime(globalStart);
+    render();
+  }
+});
