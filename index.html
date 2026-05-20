@@ -8,7 +8,7 @@
       name="description"
       content="Личный вечный секундомер, который продолжает считать время после старта."
     >
-    <link rel="stylesheet" href="styles.css?v=3">
+    <link rel="stylesheet" href="styles.css?v=4">
   </head>
   <body>
     <main class="app" aria-live="polite">
@@ -29,6 +29,18 @@
 
       <section class="totals" aria-label="Сколько времени прошло">
         <article>
+          <span id="secondsTotal">0</span>
+          <small>секунд</small>
+        </article>
+        <article>
+          <span id="minutesTotal">0</span>
+          <small>минут</small>
+        </article>
+        <article>
+          <span id="hoursTotal">0</span>
+          <small>часов</small>
+        </article>
+        <article>
           <span id="daysTotal">0</span>
           <small>дней</small>
         </article>
@@ -44,21 +56,9 @@
           <span id="yearsTotal">0</span>
           <small>лет</small>
         </article>
-        <article>
-          <span id="hoursTotal">0</span>
-          <small>часов</small>
-        </article>
-        <article>
-          <span id="minutesTotal">0</span>
-          <small>минут</small>
-        </article>
-        <article>
-          <span id="secondsTotal">0</span>
-          <small>секунд</small>
-        </article>
       </section>
     </main>
 
-    <script src="script.js?v=3"></script>
+    <script src="script.js?v=4"></script>
   </body>
 </html>
