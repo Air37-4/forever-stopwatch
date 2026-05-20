@@ -49,7 +49,7 @@ function persistStartInUrl(value) {
 
 function render() {
   if (!startedAt) {
-    els.mainTime.textContent = "00:00:00:00";
+    els.mainTime.textContent = "00:00:00";
     return;
   }
 
@@ -60,10 +60,9 @@ function render() {
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
 
-  els.mainTime.textContent = `${String(days).padStart(2, "0")}:${String(hours).padStart(
-    2,
-    "0"
-  )}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  els.mainTime.textContent = `${String(hours).padStart(2, "0")}:${String(
+    minutes
+  ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
   els.stateLabel.textContent = "Время уже идет";
   els.sinceText.textContent = `Старт: ${new Intl.DateTimeFormat("ru-RU", {
