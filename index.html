@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Вечный секундомер</title>
+    <meta
+      name="description"
+      content="Личный вечный секундомер, который продолжает считать время после старта."
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app" aria-live="polite">
+      <section class="stopwatch" aria-label="Вечный секундомер">
+        <div class="watch-case">
+          <div class="crown" aria-hidden="true"></div>
+          <div class="dial">
+            <p class="eyebrow" id="stateLabel">Готов к старту</p>
+            <h1 id="mainTime">00:00:00:00</h1>
+            <p class="since" id="sinceText">Нажмите старт один раз. Остановки не будет.</p>
+          </div>
+        </div>
+
+        <button id="startButton" class="start-button" type="button">
+          Старт
+        </button>
+      </section>
+
+      <section class="totals" aria-label="Сколько времени прошло">
+        <article>
+          <span id="secondsTotal">0</span>
+          <small>секунд</small>
+        </article>
+        <article>
+          <span id="minutesTotal">0</span>
+          <small>минут</small>
+        </article>
+        <article>
+          <span id="hoursTotal">0</span>
+          <small>часов</small>
+        </article>
+        <article>
+          <span id="daysTotal">0</span>
+          <small>дней</small>
+        </article>
+        <article>
+          <span id="weeksTotal">0</span>
+          <small>недель</small>
+        </article>
+        <article>
+          <span id="monthsTotal">0</span>
+          <small>месяцев</small>
+        </article>
+        <article>
+          <span id="yearsTotal">0</span>
+          <small>лет</small>
+        </article>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

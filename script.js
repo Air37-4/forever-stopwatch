@@ -1,0 +1,126 @@
+const STORAGE_KEY = "forever-stopwatch-started-at";
+
+const els = {
+  startButton: document.querySelector("#startButton"),
+  stateLabel: document.querySelector("#stateLabel"),
+  mainTime: document.querySelector("#mainTime"),
+  sinceText: document.querySelector("#sinceText"),
+  secondsTotal: document.querySelector("#secondsTotal"),
+  minutesTotal: document.querySelector("#minutesTotal"),
+  hoursTotal: document.querySelector("#hoursTotal"),
+  daysTotal: document.querySelector("#daysTotal"),
+  weeksTotal: document.querySelector("#weeksTotal"),
+  monthsTotal: document.querySelector("#monthsTotal"),
+  yearsTotal: document.querySelector("#yearsTotal"),
+};
+
+let startedAt = readStartTime();
+
+function readStartTime() {
+  const url = new URL(window.location.href);
+  const fromUrl = Number(url.searchParams.get("start"));
+  const fromStorage = Number(localStorage.getItem(STORAGE_KEY));
+  const candidate = Number.isFinite(fromUrl) && fromUrl > 0 ? fromUrl : fromStorage;
+
+  if (Number.isFinite(candidate) && candidate > 0) {
+    localStorage.setItem(STORAGE_KEY, String(candidate));
+    return candidate;
+  }
+
+  return null;
+}
+
+function startForever() {
+  if (startedAt) {
+    return;
+  }
+
+  startedAt = Date.now();
+  localStorage.setItem(STORAGE_KEY, String(startedAt));
+  persistStartInUrl(startedAt);
+  render();
+}
+
+function persistStartInUrl(value) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("start", String(value));
+  window.history.replaceState({}, "", url);
+}
+
+function render() {
+  if (!startedAt) {
+    els.mainTime.textContent = "00:00:00:00";
+    return;
+  }
+
+  const elapsedMs = Math.max(0, Date.now() - startedAt);
+  const totalSeconds = Math.floor(elapsedMs / 1000);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  els.mainTime.textContent = `${String(days).padStart(2, "0")}:${String(hours).padStart(
+    2,
+    "0"
+  )}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+  els.stateLabel.textContent = "Время уже идет";
+  els.sinceText.textContent = `Старт: ${new Intl.DateTimeFormat("ru-RU", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(startedAt))}`;
+
+  els.secondsTotal.textContent = formatNumber(totalSeconds);
+  els.minutesTotal.textContent = formatNumber(Math.floor(totalSeconds / 60));
+  els.hoursTotal.textContent = formatNumber(Math.floor(totalSeconds / 3600));
+  els.daysTotal.textContent = formatNumber(days);
+  els.weeksTotal.textContent = formatNumber(Math.floor(days / 7));
+  els.monthsTotal.textContent = formatNumber(fullCalendarMonthsSince(startedAt));
+  els.yearsTotal.textContent = formatNumber(fullCalendarYearsSince(startedAt));
+
+  els.startButton.textContent = "Запущено";
+  els.startButton.classList.add("is-running");
+  els.startButton.setAttribute("aria-disabled", "true");
+}
+
+function fullCalendarMonthsSince(timestamp) {
+  const start = new Date(timestamp);
+  const now = new Date();
+  let months =
+    (now.getFullYear() - start.getFullYear()) * 12 + now.getMonth() - start.getMonth();
+
+  if (now.getDate() < start.getDate()) {
+    months -= 1;
+  }
+
+  return Math.max(0, months);
+}
+
+function fullCalendarYearsSince(timestamp) {
+  const start = new Date(timestamp);
+  const now = new Date();
+  let years = now.getFullYear() - start.getFullYear();
+  const anniversary = new Date(now.getFullYear(), start.getMonth(), start.getDate());
+
+  if (now < anniversary) {
+    years -= 1;
+  }
+
+  return Math.max(0, years);
+}
+
+function formatNumber(value) {
+  return new Intl.NumberFormat("ru-RU").format(value);
+}
+
+if (startedAt) {
+  persistStartInUrl(startedAt);
+}
+
+els.startButton.addEventListener("click", startForever);
+render();
+setInterval(render, 1000);
