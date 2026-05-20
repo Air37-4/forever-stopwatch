@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forever-stopwatch-started-at";
-const GLOBAL_START_URL = "start.json?v=1";
+const GLOBAL_START_URL = "start.json?v=2";
 
 const els = {
   startButton: document.querySelector("#startButton"),
@@ -143,7 +143,9 @@ render();
 setInterval(render, 1000);
 
 readGlobalStartTime().then((globalStart) => {
-  if (!startedAt && globalStart) {
+  const hasExplicitStart = new URL(window.location.href).searchParams.has("start");
+
+  if (globalStart && (!startedAt || !hasExplicitStart)) {
     startedAt = readStartTime(globalStart);
     render();
   }
