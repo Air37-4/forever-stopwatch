@@ -17,7 +17,16 @@
           <div class="crown" aria-hidden="true"></div>
           <div class="dial">
             <p class="eyebrow" id="stateLabel">Готов к старту</p>
-            <h1 id="mainTime">00:00:00</h1>
+            <div class="elapsed-display" aria-label="Главный отсчет">
+              <div class="elapsed-item">
+                <span id="mainDays">0</span>
+                <small>дней</small>
+              </div>
+              <div class="elapsed-item">
+                <span id="mainHours">0</span>
+                <small>часов</small>
+              </div>
+            </div>
             <p class="since" id="sinceText">Нажмите старт один раз. Остановки не будет.</p>
           </div>
         </div>
@@ -59,6 +68,6 @@
       </section>
     </main>
 
-    <script src="script.js?v=6"></script>
+    <script src="script.js?v=7"></script>
   </body>
 </html>

@@ -4,7 +4,8 @@ const GLOBAL_START_URL = "start.json?v=2";
 const els = {
   startButton: document.querySelector("#startButton"),
   stateLabel: document.querySelector("#stateLabel"),
-  mainTime: document.querySelector("#mainTime"),
+  mainDays: document.querySelector("#mainDays"),
+  mainHours: document.querySelector("#mainHours"),
   sinceText: document.querySelector("#sinceText"),
   secondsTotal: document.querySelector("#secondsTotal"),
   minutesTotal: document.querySelector("#minutesTotal"),
@@ -71,20 +72,18 @@ function persistStartInUrl(value) {
 
 function render() {
   if (!startedAt) {
-    els.mainTime.textContent = "00:00:00";
+    els.mainDays.textContent = "0";
+    els.mainHours.textContent = "0";
     return;
   }
 
   const elapsedMs = Math.max(0, Date.now() - startedAt);
   const totalSeconds = Math.floor(elapsedMs / 1000);
   const days = Math.floor(totalSeconds / 86400);
-  const hours = Math.floor((totalSeconds % 86400) / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
+  const totalHours = Math.floor(totalSeconds / 3600);
 
-  els.mainTime.textContent = `${String(hours).padStart(2, "0")}:${String(
-    minutes
-  ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  els.mainDays.textContent = formatNumber(days);
+  els.mainHours.textContent = formatNumber(totalHours);
 
   els.stateLabel.textContent = "Время уже идет";
   els.sinceText.textContent = `Старт: ${new Intl.DateTimeFormat("ru-RU", {
@@ -93,11 +92,12 @@ function render() {
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    second: "2-digit",
   }).format(new Date(startedAt))}`;
 
   els.secondsTotal.textContent = formatNumber(totalSeconds);
   els.minutesTotal.textContent = formatNumber(Math.floor(totalSeconds / 60));
-  els.hoursTotal.textContent = formatNumber(Math.floor(totalSeconds / 3600));
+  els.hoursTotal.textContent = formatNumber(totalHours);
   els.daysTotal.textContent = formatNumber(days);
   els.weeksTotal.textContent = formatNumber(Math.floor(days / 7));
   els.monthsTotal.textContent = formatNumber(fullCalendarMonthsSince(startedAt));
