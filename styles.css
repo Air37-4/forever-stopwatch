@@ -127,17 +127,6 @@ body {
   letter-spacing: 0;
   text-transform: none;
   transform: translateY(-8px);
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.eyebrow:hover {
-  color: #1f5537;
-}
-
-#startButton.is-running {
-  cursor: default;
-  pointer-events: none;
 }
 
 .elapsed-display {

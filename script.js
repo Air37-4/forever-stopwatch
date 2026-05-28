@@ -1,8 +1,6 @@
-const STORAGE_KEY = "forever-stopwatch-started-at";
 const GLOBAL_START_URL = "start.json?v=5";
 
 const els = {
-  startButton: document.querySelector("#startButton"),
   mainDays: document.querySelector("#mainDays"),
   mainHours: document.querySelector("#mainHours"),
   sinceText: document.querySelector("#sinceText"),
@@ -14,64 +12,30 @@ const els = {
   yearsTotal: document.querySelector("#yearsTotal"),
 };
 
-let startedAt = readStartTime();
+let startedAt = null;
 
-function readStartTime(globalStart) {
-  const url = new URL(window.location.href);
-  const fromUrl = Number(url.searchParams.get("start"));
-  const fromStorage = Number(localStorage.getItem(STORAGE_KEY));
-  const candidate =
-    Number.isFinite(fromUrl) && fromUrl > 0
-      ? fromUrl
-      : Number.isFinite(globalStart) && globalStart > 0
-        ? globalStart
-        : fromStorage;
-
-  if (Number.isFinite(candidate) && candidate > 0) {
-    localStorage.setItem(STORAGE_KEY, String(candidate));
-    return candidate;
-  }
-
-  return null;
-}
-
-async function readGlobalStartTime() {
+async function init() {
   try {
     const response = await fetch(GLOBAL_START_URL, { cache: "no-store" });
-
-    if (!response.ok) {
-      return null;
+    if (response.ok) {
+      const config = await response.json();
+      const ts = Number(config.startedAt);
+      if (Number.isFinite(ts) && ts > 0) {
+        startedAt = ts;
+      }
     }
-
-    const config = await response.json();
-    const timestamp = Number(config.startedAt);
-    return Number.isFinite(timestamp) && timestamp > 0 ? timestamp : null;
   } catch {
-    return null;
+    // ignore
   }
-}
-
-function startForever() {
-  if (startedAt) {
-    return;
-  }
-
-  startedAt = Date.now();
-  localStorage.setItem(STORAGE_KEY, String(startedAt));
-  persistStartInUrl(startedAt);
   render();
-}
-
-function persistStartInUrl(value) {
-  const url = new URL(window.location.href);
-  url.searchParams.set("start", String(value));
-  window.history.replaceState({}, "", url);
+  setInterval(render, 1000);
 }
 
 function render() {
   if (!startedAt) {
     els.mainDays.textContent = "0";
     els.mainHours.textContent = "0";
+    els.sinceText.textContent = "Ожидание времени старта...";
     return;
   }
 
@@ -97,12 +61,6 @@ function render() {
   els.weeksTotal.textContent = formatNumber(Math.floor(days / 7));
   els.monthsTotal.textContent = formatNumber(fullCalendarMonthsSince(startedAt));
   els.yearsTotal.textContent = formatNumber(fullCalendarYearsSince(startedAt));
-
-  if (els.startButton) {
-    els.startButton.textContent = "Запущено";
-    els.startButton.classList.add("is-running");
-    els.startButton.setAttribute("aria-disabled", "true");
-  }
 }
 
 function fullCalendarMonthsSince(timestamp) {
@@ -110,11 +68,9 @@ function fullCalendarMonthsSince(timestamp) {
   const now = new Date();
   let months =
     (now.getFullYear() - start.getFullYear()) * 12 + now.getMonth() - start.getMonth();
-
   if (now.getDate() < start.getDate()) {
     months -= 1;
   }
-
   return Math.max(0, months);
 }
 
@@ -123,11 +79,9 @@ function fullCalendarYearsSince(timestamp) {
   const now = new Date();
   let years = now.getFullYear() - start.getFullYear();
   const anniversary = new Date(now.getFullYear(), start.getMonth(), start.getDate());
-
   if (now < anniversary) {
     years -= 1;
   }
-
   return Math.max(0, years);
 }
 
@@ -135,17 +89,4 @@ function formatNumber(value) {
   return new Intl.NumberFormat("ru-RU").format(value);
 }
 
-if (els.startButton) {
-  els.startButton.addEventListener("click", startForever);
-}
-render();
-setInterval(render, 1000);
-
-readGlobalStartTime().then((globalStart) => {
-  const hasExplicitStart = new URL(window.location.href).searchParams.has("start");
-
-  if (globalStart && (!startedAt || !hasExplicitStart)) {
-    startedAt = readStartTime(globalStart);
-    render();
-  }
-});
+init();
