@@ -96,7 +96,7 @@ body {
   width: 78%;
   aspect-ratio: 1;
   display: grid;
-  align-content: center;
+  align-content: start;
   justify-items: center;
   gap: 4px;
   padding: clamp(18px, 3.5vw, 30px);
