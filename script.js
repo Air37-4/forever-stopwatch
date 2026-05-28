@@ -1,8 +1,8 @@
 const GLOBAL_START_URL = "start.json?v=6";
 
 const els = {
+  mainMinutes: document.querySelector("#mainMinutes"),
   mainHours: document.querySelector("#mainHours"),
-  mainDays: document.querySelector("#mainDays"),
 };
 
 let startedAt = null;
@@ -26,18 +26,18 @@ async function init() {
 
 function render() {
   if (!startedAt) {
+    els.mainMinutes.textContent = "0";
     els.mainHours.textContent = "0";
-    els.mainDays.textContent = "0";
     return;
   }
 
   const elapsedMs = Math.max(0, Date.now() - startedAt);
   const totalSeconds = Math.floor(elapsedMs / 1000);
-  const days = Math.floor(totalSeconds / 86400);
+  const totalMinutes = Math.floor(totalSeconds / 60);
   const totalHours = Math.floor(totalSeconds / 3600);
 
+  els.mainMinutes.textContent = formatNumber(totalMinutes);
   els.mainHours.textContent = formatNumber(totalHours);
-  els.mainDays.textContent = formatNumber(days);
 }
 
 function formatNumber(value) {
