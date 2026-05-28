@@ -8,7 +8,7 @@
       name="description"
       content="Личный вечный секундомер, который продолжает считать время после старта."
     >
-    <link rel="stylesheet" href="styles.css?v=4">
+    <link rel="stylesheet" href="styles.css?v=6">
   </head>
   <body>
     <main class="app" aria-live="polite">
@@ -16,7 +16,7 @@
         <div class="watch-case">
           <div class="crown" aria-hidden="true"></div>
           <div class="dial">
-            <p class="eyebrow">Start</p>
+            <p class="eyebrow" id="startButton" role="button" tabindex="0">Start</p>
             <div class="elapsed-display" aria-label="Главный отсчет">
               <div class="elapsed-item">
                 <span id="mainHours">0</span>
@@ -31,9 +31,6 @@
           </div>
         </div>
 
-        <button id="startButton" class="start-button" type="button">
-          Старт
-        </button>
       </section>
 
       <section class="totals" aria-label="Сколько времени прошло">
@@ -64,6 +61,6 @@
       </section>
     </main>
 
-    <script src="script.js?v=11"></script>
+    <script src="script.js?v=12"></script>
   </body>
 </html>

@@ -98,9 +98,11 @@ function render() {
   els.monthsTotal.textContent = formatNumber(fullCalendarMonthsSince(startedAt));
   els.yearsTotal.textContent = formatNumber(fullCalendarYearsSince(startedAt));
 
-  els.startButton.textContent = "Запущено";
-  els.startButton.classList.add("is-running");
-  els.startButton.setAttribute("aria-disabled", "true");
+  if (els.startButton) {
+    els.startButton.textContent = "Запущено";
+    els.startButton.classList.add("is-running");
+    els.startButton.setAttribute("aria-disabled", "true");
+  }
 }
 
 function fullCalendarMonthsSince(timestamp) {
@@ -133,7 +135,9 @@ function formatNumber(value) {
   return new Intl.NumberFormat("ru-RU").format(value);
 }
 
-els.startButton.addEventListener("click", startForever);
+if (els.startButton) {
+  els.startButton.addEventListener("click", startForever);
+}
 render();
 setInterval(render, 1000);
 
