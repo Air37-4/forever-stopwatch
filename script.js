@@ -1,12 +1,11 @@
 const STORAGE_KEY = "forever-stopwatch-started-at";
-const GLOBAL_START_URL = "start.json?v=4";
+const GLOBAL_START_URL = "start.json?v=5";
 
 const els = {
   startButton: document.querySelector("#startButton"),
   mainDays: document.querySelector("#mainDays"),
   mainHours: document.querySelector("#mainHours"),
   sinceText: document.querySelector("#sinceText"),
-  secondsTotal: document.querySelector("#secondsTotal"),
   minutesTotal: document.querySelector("#minutesTotal"),
   hoursTotal: document.querySelector("#hoursTotal"),
   daysTotal: document.querySelector("#daysTotal"),
@@ -90,10 +89,8 @@ function render() {
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-    second: "2-digit",
   }).format(new Date(startedAt))}`;
 
-  els.secondsTotal.textContent = formatNumber(totalSeconds);
   els.minutesTotal.textContent = formatNumber(Math.floor(totalSeconds / 60));
   els.hoursTotal.textContent = formatNumber(totalHours);
   els.daysTotal.textContent = formatNumber(days);
