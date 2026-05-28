@@ -1,4 +1,4 @@
-const GLOBAL_START_URL = "start.json?v=6";
+const GLOBAL_START_URL = "start.json?v=7";
 
 const els = {
   mainMinutes: document.querySelector("#mainMinutes"),
