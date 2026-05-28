@@ -1,5 +1,5 @@
 const STORAGE_KEY = "forever-stopwatch-started-at";
-const GLOBAL_START_URL = "start.json?v=2";
+const GLOBAL_START_URL = "start.json?v=3";
 
 const els = {
   startButton: document.querySelector("#startButton"),
@@ -85,7 +85,7 @@ function render() {
   els.mainDays.textContent = formatNumber(days);
   els.mainHours.textContent = formatNumber(totalHours);
 
-  els.stateLabel.textContent = "Время уже идет";
+  els.stateLabel.textContent = "Процесс запущен с 13:30 28.05.2026";
   els.sinceText.textContent = `Старт: ${new Intl.DateTimeFormat("ru-RU", {
     day: "2-digit",
     month: "long",
